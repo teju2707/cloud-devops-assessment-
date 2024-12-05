@@ -1,0 +1,7 @@
+volumeMounts:
+  - name: myapp-secret-volume
+    mountPath: /etc/myapp/secret
+volumes:
+  - name: myapp-secret-volume
+    secret:
+      secretName: myapp-secret
