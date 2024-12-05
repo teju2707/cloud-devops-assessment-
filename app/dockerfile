@@ -1,0 +1,21 @@
+# Use the official Node.js image from Docker Hub
+FROM node:18-slim as build
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package.json ./
+RUN npm install --production
+
+# Copy app source code
+COPY . .
+
+# Set a non-root user (security best practice)
+USER node
+
+# Expose application port
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "src/app.js"]
