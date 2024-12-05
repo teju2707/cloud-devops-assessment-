@@ -1,0 +1,5 @@
+"scripts": {
+  "start": "node src/app.js",
+  "test": "mocha tests/test.js",
+  "lint": "eslint ."
+}
