@@ -1,0 +1,7 @@
+- name: Cache Node.js modules
+  uses: actions/cache@v2
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-modules-
