@@ -1,3 +1,39 @@
-Sample Grafana Dashboard Configuration (JSON):
-json
-Copy code
+{
+  "dashboard": {
+    "title": "Kubernetes Cluster Monitoring",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage",
+        "targets": [
+          {
+            "expr": "avg(rate(container_cpu_usage_seconds_total{cluster=\"k8s-cluster\"}[5m])) by (pod)",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxis": {
+          "format": "short"
+        }
+      },
+      {
+        "type": "graph",
+        "title": "Memory Usage",
+        "targets": [
+          {
+            "expr": "avg(container_memory_usage_bytes{cluster=\"k8s-cluster\"}) by (pod)",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxis": {
+          "format": "bytes"
+        }
+      }
+    ]
+  }
+}
