@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_SERVER = "yourserver.com"
+        SSH_KEY = credentials('ssh-private-key')
+        SLACK_TOKEN = credentials('slack-token')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                script {
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                script {
+                    sh """
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no user@${DEPLOY_SERVER} \
+                    'cd /path/to/app && git pull && npm install && pm2 restart app'
+                    """
+                }
+            }
+        }
+
+        stage('Notify Slack') {
+            steps {
+                slackSend (channel: '#deployments', message: "Deployment to ${DEPLOY_SERVER} successful!")
+            }
+        }
+    }
+
+    post {
+        success {
+            slackSend (channel: '#deployments', message: "Build and deployment successful!")
+        }
+        failure {
+            slackSend (channel: '#deployments', message: "Build or deployment failed!")
+        }
+    }
+}
